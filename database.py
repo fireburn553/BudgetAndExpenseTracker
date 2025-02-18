@@ -15,8 +15,7 @@ def create_database():
     CREATE TABLE IF NOT EXISTS income (
         income_id INTEGER PRIMARY KEY AUTOINCREMENT,
         source TEXT NOT NULL,
-        goal_amount REAL NOT NULL,
-        actual_amount REAL NOT NULL,
+        amount REAL NOT NULL,
         month TEXT NOT NULL
     );
 
@@ -29,6 +28,14 @@ def create_database():
         payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
         method_name TEXT UNIQUE NOT NULL
     );
+
+    -- Insert payment methods after table creation
+    INSERT OR IGNORE INTO payment_method (method_name)
+    VALUES
+        ('Cash'),
+        ('Credit Card'),
+        ('Debit Card'),
+        ('Mobile Payment / Cashless');
 
     CREATE TABLE IF NOT EXISTS expenses (
         expenses_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +52,7 @@ def create_database():
 
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     create_database()
