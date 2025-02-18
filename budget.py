@@ -1,12 +1,11 @@
-from models import view_payment_method, view_expenses_category, add_expense, view_expenses, view_quick_expenses, view_income, add_income, add_expense_category
-# from queries import total_expenses_per_category, expenses_in_date_range
-from database import create_database
 import datetime
+from tabulate import tabulate
+from models import total_expenses_per_category, view_payment_method, view_expenses_category, add_expense, view_expenses, view_quick_expenses, view_income, add_income, add_expense_category
+from database import create_database
+
 
 def menu():
     create_database()
-    
-
 
     while True:
         total_expenses = view_quick_expenses()
@@ -29,16 +28,21 @@ def menu():
         print("[7] Exit")
 
         choice = input("Choose an option: ")
-
+        #DONE
         if choice == "1":
             category_name = input("Enter expense category name: ")
             add_expense_category(category_name)
             print("Expense category added successfully.")
 
-        
+        #DONE
         elif choice == "2":
-            for row in view_expenses():
-                print(row)
+           print("Expenses for the Month of", month.strftime("%B %Y"))
+           headers = ["Date", "Store", "Details", "Amount", "Category", "Payment Method"]
+           formatted_result =[
+               [row[0], row[1], row[2], f"${row[3]:,.2f}", row[4], row[5]]
+               for row in view_expenses()
+           ]
+           print(tabulate(formatted_result, headers=headers, tablefmt="grid"))
 
         #DONE
         elif choice == "3":
@@ -63,17 +67,18 @@ def menu():
             print(source, amount, month.strftime("%B"))
             add_income(source, amount, month.strftime("%B"))
             print("Income added successfully.")
-
+        #DONE
         elif choice == "5":
-            for row in total_expenses_per_category():
-                print(row)
+            print("Total Expenses per Category:")
+            headers = ["Category", "Total Expenses"]
+            print(tabulate(total_expenses_per_category(), headers=headers, tablefmt="grid"))
         
         #DONE
         elif choice == "6":
             print("Expense Categories:")
-            for row in view_expenses_category():
-                print(row[1])
-
+            headers = ["No.","Category"]
+            print(tabulate(view_expenses_category(), headers=headers, tablefmt="grid"))
+            
         elif choice == "7":
             break
 

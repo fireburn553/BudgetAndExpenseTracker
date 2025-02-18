@@ -1,5 +1,6 @@
-from database import get_connection
 from datetime import datetime
+from database import get_connection
+
 
 month = datetime.now().strftime('%B')  # Get the current month as a string
 
@@ -46,7 +47,8 @@ def view_expenses():
         FROM expenses e 
         JOIN expense_category c ON e.category_id = c.expense_category_id
         JOIN payment_method p ON e.payment_method_id = p.payment_id
-        WHERE strftime('%Y-%m', e.date) = strftime('%Y-%m', 'now');
+        WHERE strftime('%Y-%m', e.date) = strftime('%Y-%m', 'now')
+        ORDER BY e.date;
         """
     )
 
@@ -125,6 +127,25 @@ def view_payment_method():
     cursor.execute(
         """
         SELECT * FROM payment_method;
+        """
+    )
+
+    results = cursor.fetchall()  # Fetch all results
+    conn.close()
+    return results
+
+def total_expenses_per_category():
+    """Return the total expenses for each category."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT c.category_name, SUM(e.amount) AS total_expenses
+        FROM expenses e
+        JOIN expense_category c ON e.category_id = c.expense_category_id
+        WHERE strftime('%Y-%m', e.date) = strftime('%Y-%m', 'now')
+        GROUP BY c.category_name;
         """
     )
 
