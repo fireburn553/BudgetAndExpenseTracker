@@ -152,3 +152,36 @@ def total_expenses_per_category():
     results = cursor.fetchall()  # Fetch all results
     conn.close()
     return results
+
+def update_category_name(category_id, category_name):
+    """Update the name of an expense category."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE expense_category
+        SET category_name = ?
+        WHERE expense_category_id = ?;
+        """,
+        (category_name, category_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+def delete_category(category_id):
+    """Delete an expense category from the database."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM expense_category
+        WHERE expense_category_id = ?;
+        """,
+        (category_id,)
+    )
+
+    conn.commit()
+    conn.close()
